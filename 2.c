@@ -3,17 +3,16 @@
 
 int main()
 {
-    int ch;
+    int ch = getchar();
     int notCharCnt = 0;
 
     while(ch != EOF)
     {
-        ch = getchar();
-
         if (!isalpha(ch))
             notCharCnt++;
 
         putchar(ch);
+        ch = getchar();
     }
 
     fprintf(stderr, "Non-character count: %d\n", notCharCnt);
