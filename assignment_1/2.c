@@ -1,20 +1,22 @@
 #include <stdio.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 int main()
 {
-    int ch = getchar();
-    int notCharCnt = 0;
+    fprintf(stdout, "%s\n", "Enter characters: ");
+    int count = 0;
+    int c = getchar();
 
-    while(ch != EOF)
+    while(c != EOF)
     {
-        if (!isalpha(ch))
-            notCharCnt++;
+        if (!isalpha(c))
+            count++;
 
-        putchar(ch);
-        ch = getchar();
+        putchar(c);
+        c = getchar();
     }
 
-    fprintf(stderr, "Non-character count: %d\n", notCharCnt);
-    return 0;
+    fprintf(stderr, "Non-character count: %d\n", count);
+    exit(0);
 }
