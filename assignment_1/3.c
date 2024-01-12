@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 int main()
 {
+    fprintf(stdout, "%s\n", "Press Ctrl+D to reach EOF: ");
     int ch = getchar();
 
     while(ch != EOF)
@@ -21,6 +23,6 @@ int main()
         }      
         ch = getchar(); 
     }
-    return 0;
+    exit(0);
 }
 
