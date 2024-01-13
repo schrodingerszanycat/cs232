@@ -13,7 +13,7 @@ char *func_msg = "1. open()\n2. creat()\n3. dup()\n4. dup2()\n5. pipe()\n6. read
 int main() {
     
     char inbuf[MSGSIZE]; 
-    int p[2], i; 
+    int p[2]; 
   
     if (pipe(p) < 0) 
         exit(1); 
