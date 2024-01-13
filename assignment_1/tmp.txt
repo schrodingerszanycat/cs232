@@ -1,0 +1,7 @@
+This is a new file and some text too1
+helllllo
+Anushka Srivastava
+SJBSCKHBXJSKH
+This will be output to the file named tmp.txt
+This will also be output to the file named tmp.txt
+I am a print statement AND I will be printed in the file tmp.txt!
