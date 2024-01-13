@@ -41,7 +41,12 @@ int main()
         perror("Error creating pipe.");
     }
 
-    pid_t 
+    pid_t p1 = fork();
+    if (p < 0) {
+        perror("Fork failure.");
+        exit(1);
+    }
+    
 
     return 0;
 }
