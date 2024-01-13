@@ -4,23 +4,25 @@
 #include <unistd.h>
 #include <stdio.h>
 
-int main()
-{
+#define BUFSIZ 1024
+
+int main() {
     int fd;
-    fd = open("tmp.txt", O_RDWR);
-    if (fd < 0) 
-        fd = creat("tmp.txt", O_RDWR);
+
+    fd = open("./tmp.txt", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+    if (fd < 0) {
+        perror("Error opening/creating file");
+        return 1;
+    }
 
     char buf[BUFSIZ];
     int n;
 
-    while ((n = read(0, buf, BUFSIZ)) > 0)
-    {
-        c = 
+    while ((n = read(0, buf, BUFSIZ)) > 0) {
+        write(fd, buf, n);
     }
 
-    if (n < 0)
-    {
+    if (n < 0) {
         perror("Read error");
         return 1;
     }
@@ -28,3 +30,4 @@ int main()
     close(fd);
     return 0;
 }
+
