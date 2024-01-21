@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
         dup(a[0]);
         close(a[1]);
         //execl("C:/Users/Asus/GitHub/schrodingerszanycat/cs232/assignment_1/count", "count", (char *) NULL);
-        execl("./count", "count", (char *) NULL);
+        execl("./count", "count", (char *) 0);
         perror("Error in execl");
         exit(1);    
         close(a[0]);
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
             dup(a[1]);
             close(a[0]);
             //execl("C:/Users/Asus/GitHub/schrodingerszanycat/cs232/assignment_1/convert", "convert", (char *) NULL);
-            execl("./convert", "convert", (char *) NULL);
+            execl("./convert", "convert", (char *) 0);
             perror("Error in execl");
             exit(1);
             close(a[1]);

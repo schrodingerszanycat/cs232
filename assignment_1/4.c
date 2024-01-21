@@ -20,7 +20,6 @@ int main() {
   
     write(p[1], msg, MSGSIZE); 
     write(p[1], func_msg, MSGSIZE); 
-
   
     for (i = 0; i < 2; i++) { 
         read(p[0], inbuf, MSGSIZE); 
@@ -52,7 +51,8 @@ int main() {
     write(fd,"This will also be output to the file named tmp.txt\n", 51); 
 
     dup2(fd, 1) ;  
-    printf("I am a print statement AND I will be printed in the file tmp.txt!\n"); 
+    printf("I am a print statement AND I will be printed in the
+     file tmp.txt!\n"); 
     
     close(fd);
     return 0;
