@@ -1,5 +1,9 @@
 #include <sys/types.h>
 #include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h> 
+#include<sys/wait.h>
 
 int main(int argc, char *argv[])
 {
@@ -9,20 +13,21 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    fd_in = open(argv[1], O_RDONLY);
+    int fd_in = open(argv[1], O_RDONLY);
     if (fd_in == -1)
     {
         fprintf(stderr, "%s\n", "ERROR: File does not exist.");
         exit(1);
     }
 
-    fd_out = creat(argv[2], 0644);
+    int fd_out = creat(argv[2], 0644);
     if (fd_out == -1)
     {
         fprintf(stderr, "%s\n", "ERROR: Fiole could not be created.");
         exit(1);
     }
     
+    int n;
     close(0);
     if ((n = dup(fd_in)) == -1)
     {
@@ -59,7 +64,7 @@ int main(int argc, char *argv[])
         close(0);
         dup(pipe_[0]);
         close(pipe_[1]); // close the write end to pipe before read or else deadlock...
-        execl(".\\count", "count", (char *) 0);
+        execl("Users/Asus/GitHub/schrodingerszanycat/cs232/assignment_1/count", "count", (char *) 0);
         close(pipe_[0]); // close read end of pipe
     }    
     else {
@@ -74,8 +79,8 @@ int main(int argc, char *argv[])
             close(1);
             dup(pipe_[1]);
             close(pipe_[0]);
-            execl(".\\convert", "convert", (char *) 0);
-            close(pipe_[1]); // close 
+            execl("Users/Asus/GitHub/schrodingerszanycat/cs232/assignment_1/convert", "convert", (char *) 0);
+            close(pipe_[1]); // close write end of pipe
         }
         else {
             /* parent */
