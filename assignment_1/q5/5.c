@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     }
     else if (p1 == 0)
     {
-        /* child */
+        /* child, reading from pipe */
         close(0);
         dup(a[0]);
         close(a[1]);
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
         }
         else if (p2 == 0)
         {
-            /* child */
+            /* child, writing onto pipe */
             close(1);
             dup(a[1]);
             close(a[0]);

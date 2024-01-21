@@ -8,6 +8,13 @@
 #include <signal.h>
 #include <setjmp.h>
 
+// https://i.imgur.com/pxDbqVa.jpg
+// https://stackoverflow.com/questions/24793069/what-does-do-in-bash
+// https://faculty.cs.niu.edu/~hutchins/csci480/signals.htm
+// https://web.eecs.utk.edu/~huangj/cs360/360/notes/Setjmp/lecture.html
+// https://stackoverflow.com/questions/61992736/what-is-exactly-wstatus-in-waitwstatus
+// https://stackoverflow.com/questions/881388/what-is-the-reason-for-performing-a-double-fork-when-creating-a-daemon
+
 jmp_buf env;
 
 void handler()
@@ -35,7 +42,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (argc >= 2)  // for first file
+    if (argc >= 2)
     {
         int index = (n_index != 1) ? 1 : 2;
         if (index < argc)
@@ -145,7 +152,7 @@ int main(int argc, char *argv[])
             dup(a[1]);
             close(a[0]);
             signal(SIGTERM, child_handler);
-            execl("/home/ahlad/GitHub/cs232/assignment_1/convert_q6.out", "convert_q6.out", (char *)NULL);
+            execl("./convert_q6", "convert_q6", (char *)NULL);
             close(a[1]);
         }
         else
@@ -163,9 +170,9 @@ int main(int argc, char *argv[])
         close(a[1]);
         signal(SIGTERM, child_handler);
         if (n_index < argc)
-            execl("/home/ahlad/GitHub/cs232/assignment_1/count_q6.out", "count_q6.out", argv[n_index], (char *)NULL);
+            execl("./count_q6", "count_q6", argv[n_index], (char *)NULL);
         else
-            execl("/home/ahlad/GitHub/cs232/assignment_1/count_q6.out", "count_q6.out", (char *)NULL);
+            execl("./count_q6", "count_q6", (char *)NULL);
         close(a[0]);
     }
     else
