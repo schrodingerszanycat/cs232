@@ -28,14 +28,14 @@ int main(int argc, char *argv[])
     }
 
     close(0);
-    if (dup2(fd_in, 0) == -1)
+    if (dup(fd_in) == -1)
     {
         perror("A problem has occurred.");
         exit(1);
     }
 
     close(1);
-    if (dup2(fd_out, 1) == -1)
+    if (dup(fd_out) == -1)
     {
         perror("A problem has occurred.");
         exit(1);
@@ -60,7 +60,10 @@ int main(int argc, char *argv[])
         close(0);
         dup(a[0]);
         close(a[1]);
-        execl("Users/Asus/GitHub/schrodingerszanycat/cs232/assignment_1/count", "count", (char *)0);
+        //execl("C:/Users/Asus/GitHub/schrodingerszanycat/cs232/assignment_1/count", "count", (char *) NULL);
+        execl("./count", "count", (char *) NULL);
+        perror("Error in execl");
+        exit(1);    
         close(a[0]);
     }
     else
@@ -77,7 +80,10 @@ int main(int argc, char *argv[])
             close(1);
             dup(a[1]);
             close(a[0]);
-            execl("Users/Asus/GitHub/schrodingerszanycat/cs232/assignment_1/convert", "convert", (char *)0);
+            //execl("C:/Users/Asus/GitHub/schrodingerszanycat/cs232/assignment_1/convert", "convert", (char *) NULL);
+            execl("./convert", "convert", (char *) NULL);
+            perror("Error in execl");
+            exit(1);
             close(a[1]);
         }
         else
@@ -87,7 +93,6 @@ int main(int argc, char *argv[])
             close(a[0]);
             wait(NULL);
             wait(NULL);
-            exit(0);
         }
     }
     exit(0);

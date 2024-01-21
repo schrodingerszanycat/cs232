@@ -4,7 +4,7 @@
 
 int main()
 {
-    fprintf(stdout, "%s\n", "Enter characters: ");
+    fprintf(stdout, "%s\n");
     int count = 0;
     int c = getchar();
 
