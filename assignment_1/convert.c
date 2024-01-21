@@ -4,7 +4,7 @@
 
 int main()
 {
-    fprintf(stdout, "%s\n");
+    fprintf(stdout, "\n");
     int ch = getchar();
 
     while(ch != EOF)
