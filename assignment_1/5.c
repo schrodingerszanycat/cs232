@@ -1,7 +1,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 
-int main()
+int main(int argc, char *argv[])
 {
     if (argc < 3)
     {
@@ -35,18 +35,70 @@ int main()
         perror("A problem has occurred.\n");
     }
 
-    int p[2];
-    if (pipe(p) == -1)
+    /*
+       pipe_[0] will be the fd(file descriptor) for the 
+       read end of pipe.
+       pipe_[1] will be the fd for the write end of pipe.
+       Returns : 0 on Success.
+       -1 on error. 
+    */
+
+    int pipe_[2];
+    if (pipe(pipe_) == -1)
     {
         perror("Error creating pipe.");
     }
 
     pid_t p1 = fork();
-    if (p < 0) {
+    if (p1 < 0) {
         perror("Fork failure.");
         exit(1);
     }
-    
-
+    else if (p1 == 0) {
+        /* child */
+        close(0);
+        dup(pipe_[0]);
+        close(pipe_[1]); // close the write end to pipe before read or else deadlock...
+        execl(".\\count", "count", (char *) 0);
+        close(pipe_[0]); // close read end of pipe
+    }    
+    else {
+        /* parent */
+        pid_t p2 = fork(); // forking another child process
+        if (p2 < 0) {
+            perror("Fork failure.");
+            exit(1);
+        }
+        else if (p2 == 0) {
+            /* child */
+            close(1);
+            dup(pipe_[1]);
+            close(pipe_[0]);
+            execl(".\\convert", "convert", (char *) 0);
+            close(pipe_[1]); // close 
+        }
+        else {
+            /* parent */
+            close(pipe_[1]);
+            close(pipe_[0]);
+            int status;
+            if (wait(&status) >= 0)
+            {
+                if (WIFEXITED(status))
+                    {
+                    /* Child process exited normally, through `return` or `exit` */
+                    printf("Child process 2 exited with %d status\n", WEXITSTATUS(status));
+                }
+            }
+            if (wait(&status) >= 0)
+            {
+                if (WIFEXITED(status))
+                    {
+                    /* Child process exited normally, through `return` or `exit` */
+                    printf("Child process 1 exited with %d status\n", WEXITSTATUS(status));
+                }
+            }
+        }
+    }
     return 0;
 }
