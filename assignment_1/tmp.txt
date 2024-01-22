@@ -1,1 +1,6 @@
-This is a new file and some text too.
+This is a new file and some text too.This will be output to the file named tmp.txt
+This will also be output to the file named tmp.txt
+I am a print statement AND I will be printed in the file tmp.txt!
+Type something to write onto the file...
+THIS IS A TEXT THAT OS GOING TO BE WRITTEN BY ME.
+
