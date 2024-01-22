@@ -21,7 +21,7 @@ int main() {
     write(p[1], msg, MSGSIZE); 
     write(p[1], func_msg, MSGSIZE); 
   
-    for (i = 0; i < 2; i++) { 
+    for (int i = 0; i < 2; i++) { 
         read(p[0], inbuf, MSGSIZE); 
         printf("%s\n", inbuf); 
     } 
@@ -32,6 +32,13 @@ int main() {
         perror("Error opening/creating file.");
         return 1;
     }
+
+    int copy_desc = dup(fd); 
+    write(copy_desc,"This will be output to the file named tmp.txt\n", 46);       
+    write(fd,"This will also be output to the file named tmp.txt\n", 51); 
+
+    dup2(fd, 1) ;  
+    printf("I am a print statement AND I will be printed in the file tmp.txt!\n"); 
 
     int n;
     int buf[BUFSIZ];
@@ -46,14 +53,6 @@ int main() {
         return 1;
     }
 
-    int copy_desc = dup(fd); 
-    write(copy_desc,"This will be output to the file named tmp.txt\n", 46);       
-    write(fd,"This will also be output to the file named tmp.txt\n", 51); 
-
-    dup2(fd, 1) ;  
-    printf("I am a print statement AND I will be printed in the
-     file tmp.txt!\n"); 
-    
     close(fd);
     return 0;
 }

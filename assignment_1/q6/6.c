@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <setjmp.h>
+#include <ctype.h>
 
 jmp_buf env;
 
@@ -23,11 +24,6 @@ void child_termination_handler(int pid) {
 
 int main(int argc, char *argv[]) 
 {
-    if (argc == 1)
-    {
-        exit(0);
-    }
-
     int nid = -1;
     if (argc >= 2 && argv[1][0] == '-')
     {
@@ -44,33 +40,40 @@ int main(int argc, char *argv[])
         file1_id = 1;
     }
 
-    if (file1_id != -1)
+    int fd_1 = -1;
+    if (file1_id != -1 && file1_id < argc)
     {
-        int fd_1 = open(argv[file1_id], O_RDONLY);
+        fd_1 = open(argv[file1_id], O_RDONLY);
         if (fd_1 == -1)
         {
             perror("Error opening file.");
             exit(1);
         }
+    }
+    if(fd_1 != -1)
+    {
         close(0);
         if (dup(fd_1) == -1)
         {
-            perror("Error duping.");
+            perror("Error duping. 1");
             exit(1);
         }
     }
 
-    int file2_id = -1; 
-    if (file1_id != -1)
+    int file2_id = -1;
+    int fd_2 = -1;
+    if (file1_id + 1 < argc && fd_1 != -1)
     {
-        file2_id = 1 + file1_id;
-        int fd_2 = creat(argv[file2_id], 0644);
+        file2_id = file1_id + 1;
+        fd_2 = creat(argv[file2_id], 0644);
         if (fd_2 == -1)
         {
             perror("Error creating file.");
             exit(1);
         }
-
+    }
+    if(fd_1 != -1)
+    {
         close(1);
         if (dup(fd_2) == -1)
         {
@@ -153,7 +156,7 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "Child pid = %d reaped with exit status: %d.\n", pid, WEXITSTATUS(status));
                 
                 if (pid == p1 && WEXITSTATUS(status) == 2)
-                {   // if process p1 is dead, killing p2,
+                {   // if process p1 is dead, killing p2
                     fprintf(stderr, "Process %d exited with status %d. Killing process %d.", p1, WEXITSTATUS(status), p2);
 
                     //if process p2 is already dead 
@@ -165,7 +168,6 @@ int main(int argc, char *argv[])
                     exit(1);
                 }
             }
-            // alarm(0);
             fprintf(stderr, "Normal children exit.\n");
             exit(0);
         }
