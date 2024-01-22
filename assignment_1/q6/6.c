@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
             exit(1);
         }
     }
-    if(fd_1 != -1)
+    if(fd_2 != -1)
     {
         close(1);
         if (dup(fd_2) == -1)
