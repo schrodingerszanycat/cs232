@@ -1,0 +1,10 @@
+#include <stdio.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <signal.h>
+#include <setjmp.h>
+#include <ctype.h>
