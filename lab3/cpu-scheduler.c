@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <limits.h>
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 #define MAX_PROCESS 4
 
 int current_time;
@@ -203,19 +205,88 @@ void RR(int quantum)
     PrintStatistics();
     printf("\n");
     // printf("Hit any key to continue...\n");
-
-    // printf("\n\nFinishing times: ");
-    // for (int i = 0; i < MAX_PROCESS; i++)
-    // {
-    //     printf("%d ", finishing_time[i]);
-    // }
-    // printf("\n");
 }
 
+int findIndex(int min_value, int cpuburstcopy[MAX_PROCESS])
+{
+    for(int i = 0; i < MAX_PROCESS; i++)
+    {
+        if (cpuburstcopy[i] == min_value)
+            return i;
+    }
+    return -1;
+}
+
+int findBest(int cpuburstcopy[MAX_PROCESS])
+{
+    int min_value = INT_MAX;
+    int min_index = -1;
+    for(int i = 0; i < MAX_PROCESS; i++)
+    {
+        if (cpuburstcopy[i] == -1 || cpuburstcopy[i] == 0)
+            continue;
+        min_value = MIN(min_value, cpuburstcopy[i]);
+        min_index = findIndex(min_value, cpuburstcopy);
+    }
+    return min_index;
+}
+
+void refurbish(int cpuburstcopy[MAX_PROCESS])
+{
+    for(int i = 0; i < MAX_PROCESS; i++)
+    {
+        if (cpuburstcopy[i] == 0 && processtable[i].arrival <= current_time) 
+        {
+            cpuburstcopy[i] = processtable[i].cpuburst;
+        }
+    }
+}
 
 void SRBF()
 {
-    return;
+    printf("-------------------------------------------------\n");
+    printf("         Shortest Remaining Burst First          \n");
+    printf("-------------------------------------------------\n");
+    current_time = 0;
+    int finishing_time[MAX_PROCESS];
+    int cpuburstcopy[MAX_PROCESS];
+    for (int i = 0; i < MAX_PROCESS; i++)
+    {
+        cpuburstcopy[i] = 0;
+        finishing_time[i] = 0;
+    }
+
+    int best;
+    int start_time;
+    while (!AllCompleted(cpuburstcopy))
+    {
+        start_time = current_time;
+        refurbish(cpuburstcopy);
+        
+        best = findBest(cpuburstcopy);
+        cpuburstcopy[best] -= 1;
+        printf("[%d-", start_time);
+        current_time++;
+        
+        if (cpuburstcopy[best] == 0)
+        {
+            finishing_time[best] = current_time;
+            cpuburstcopy[best] = -1;
+        }      
+        printf("%d]    %s running\n", current_time, processtable[best].name);
+    }
+
+    for (int i = 0; i < MAX_PROCESS; i++)
+    {
+        processtable[i].turnaround = finishing_time[i]-processtable[i].arrival;
+        processtable[i].wait = processtable[i].turnaround-processtable[i].cpuburst;
+    }
+
+    printf("\n");
+    PrintStatistics();
+    printf("\n");
+    // printf("Hit any key to continue...\n");
+
 }
 
 void runMenu()
@@ -246,6 +317,7 @@ void runMenu()
                 RR(quantum);
                 break;
             case 3:
+                SRBF();
                 break;
             case 4:
                 break;                
