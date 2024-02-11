@@ -53,7 +53,7 @@ void ReadProcessTable(char * filename)
         new_process->turnaround = 0;
         new_process->wait = 0;
         processtable[j] = *new_process;
-        free(new_process);
+        ///free(new_process);
         j++;
     }
     printf("Reading completed!\n");
