@@ -150,6 +150,7 @@ void RR(int quantum)
     }
 
     int first = 0;
+    int start_time;
     while (!AllCompleted(cpuburstcopy)) {
 
         if (cpuburstcopy[first] == -1)
@@ -168,8 +169,10 @@ void RR(int quantum)
             continue;
         }
         
+        start_time = current_time;
         if (cpuburstcopy[first] > 0) 
         {
+            printf("[%d-", start_time);
             int tmp = 0;
             if ((cpuburstcopy[first] - quantum) <= 0)
             {
@@ -177,23 +180,36 @@ void RR(int quantum)
                 cpuburstcopy[first] = -1;
                 current_time += tmp;
                 finishing_time[first] = current_time;
+                printf("%d]    %s running\n", current_time, processtable[first].name);
             } 
             else 
             {
                 cpuburstcopy[first] -= quantum;
                 current_time += quantum;
+                printf("%d]    %s running\n", current_time, processtable[first].name);
             }
             first = (first + 1) % MAX_PROCESS;
             continue;
         }
     }
 
-    printf("\n\nFinishing times: ");
     for (int i = 0; i < MAX_PROCESS; i++)
     {
-        printf("%d ", finishing_time[i]);
+        processtable[i].turnaround = finishing_time[i]-processtable[i].arrival;
+        processtable[i].wait = processtable[i].turnaround-processtable[i].cpuburst;
     }
+
     printf("\n");
+    PrintStatistics();
+    printf("\n");
+    // printf("Hit any key to continue...\n");
+
+    // printf("\n\nFinishing times: ");
+    // for (int i = 0; i < MAX_PROCESS; i++)
+    // {
+    //     printf("%d ", finishing_time[i]);
+    // }
+    // printf("\n");
 }
 
 
@@ -226,6 +242,7 @@ void runMenu()
                 int quantum;
                 printf("Enter the time quantum: ");
                 scanf("%d", &quantum);
+                printf("\n");
                 RR(quantum);
                 break;
             case 3:
