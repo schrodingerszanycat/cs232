@@ -120,3 +120,64 @@ void RR(int quantum) {
     //     }
     //     cpuburstcopy[i] = processtable[i].cpuburst;
     // }
+
+    // void RR(int quantum)
+// {
+//     printf("-------------------------------------------------\n");
+//     printf("             Round Robin Scheduling              \n");
+//     printf("-------------------------------------------------\n");
+    
+//     int current_time = 0;
+//     int cpuburstcopy[MAX_PROCESS];
+//     int finishing_time[MAX_PROCESS];
+//     for (int i = 0; i < MAX_PROCESS; i++)
+//     {
+//         cpuburstcopy[i] = 0;
+//         finishing_time[i] = 0;
+//     }
+
+//     int first = 0;
+//     bool allFinished = false;
+//     while (!allFinished) {
+//         for (int i = 0; i < MAX_PROCESS; i++) 
+//         {
+//             printf("%d ", cpuburstcopy[i]);
+
+//             if (cpuburstcopy[i] == 0 && processtable[i].arrival <= current_time) 
+//             {
+//                 cpuburstcopy[i] = processtable[i].cpuburst;
+//             }
+            
+//             if (cpuburstcopy[i] > 0) 
+//             {
+//                 int tmp = 0;
+//                 if (cpuburstcopy[i] - quantum < 0)
+//                 {
+//                     tmp = cpuburstcopy[i];
+//                     cpuburstcopy[i] = -1;
+//                     current_time += tmp;
+//                     finishing_time[i] = current_time;
+//                     break;
+//                 } 
+//                 cpuburstcopy[i] -= quantum;
+//                 current_time += quantum;
+//                 first = (first + 1) % MAX_PROCESS;
+//             }
+//         }
+
+//         allFinished = true;
+//         for (int i = 0; i < MAX_PROCESS; i++) {
+//             if (cpuburstcopy[i] > 0) {
+//                 allFinished = false;
+//                 break;
+//             }
+//         }
+//     }
+//     printf("\n\nFinishing times: ");
+
+//     for (int i = 0; i < MAX_PROCESS; i++)
+//     {
+//         printf("%d ", finishing_time[i]);
+//     }
+//     printf("\n");
+// }

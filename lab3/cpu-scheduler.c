@@ -142,42 +142,54 @@ void FCFS()
 //     int first = 0;
 //     bool allFinished = false;
 //     while (!allFinished) {
-//         for (int i = 0; i < MAX_PROCESS; i++) 
-//         {
-//             printf("%d ", cpuburstcopy[i]);
 
-//             if (cpuburstcopy[i] == 0 && processtable[i].arrival <= current_time) 
-//             {
-//                 cpuburstcopy[i] = processtable[i].cpuburst;
-//             }
-            
-//             if (cpuburstcopy[i] > 0) 
-//             {
-//                 int tmp = 0;
-//                 if (cpuburstcopy[i] - quantum < 0)
-//                 {
-//                     tmp = cpuburstcopy[i];
-//                     cpuburstcopy[i] = -1;
-//                     current_time += tmp;
-//                     finishing_time[i] = current_time;
-//                     break;
-//                 } 
-//                 cpuburstcopy[i] -= quantum;
-//                 current_time += quantum;
-//                 first = (first + 1) % MAX_PROCESS;
-//             }
+//         if (cpuburstcopy[first] == -1)
+//         {
+//             first = (first + 1) % MAX_PROCESS;
+//             continue;
 //         }
 
-//         allFinished = true;
-//         for (int i = 0; i < MAX_PROCESS; i++) {
-//             if (cpuburstcopy[i] > 0) {
-//                 allFinished = false;
+//         if (cpuburstcopy[first] == 0 && processtable[first].arrival <= current_time) 
+//         {
+//             cpuburstcopy[first] = processtable[first].cpuburst;
+//         }
+//         else if (cpuburstcopy[first] == 0 && processtable[first].arrival > current_time)
+//         {
+//             first = (first+1) % MAX_PROCESS;
+//             continue;
+//         }
+        
+//         if (cpuburstcopy[first] > 0) 
+//         {
+//             int tmp = 0;
+//             if ((cpuburstcopy[first] - quantum) < 0)
+//             {
+//                 tmp = cpuburstcopy[first];
+//                 cpuburstcopy[first] = -1;
+//                 current_time += tmp;
+//                 finishing_time[first] = current_time;
+//                 first = (first+1)%MAX_PROCESS;
+//                 break;
+//             } 
+//             cpuburstcopy[first] -= quantum;
+//             current_time += quantum;
+//             first = (first + 1) % MAX_PROCESS;
+//         }
+    
+//         int i = 0;
+//         while(1)
+//         {
+//             if (i == MAX_PROCESS)
+//             {
+//                 allFinished = true;
 //                 break;
 //             }
+//             if (cpuburstcopy[i] != -1)
+//                 break;
 //         }
 //     }
-//     printf("\n\nFinishing times: ");
 
+//     printf("\n\nFinishing times: ");
 //     for (int i = 0; i < MAX_PROCESS; i++)
 //     {
 //         printf("%d ", finishing_time[i]);
@@ -190,7 +202,7 @@ void RR(int quantum)
     printf("-------------------------------------------------\n");
     printf("             Round Robin Scheduling              \n");
     printf("-------------------------------------------------\n");
-    
+
     int current_time = 0;
     int cpuburstcopy[MAX_PROCESS];
     int finishing_time[MAX_PROCESS];
@@ -203,39 +215,52 @@ void RR(int quantum)
     int first = 0;
     bool allFinished = false;
     while (!allFinished) {
-    
-        for(int j = 0; j < MAX_PROCESS; j++)
+
+        if (cpuburstcopy[first] == -1)
         {
-            printf("%d ", cpuburstcopy[j]);
+            first = (first + 1) % MAX_PROCESS;
+            continue;
         }
 
         if (cpuburstcopy[first] == 0 && processtable[first].arrival <= current_time) 
         {
             cpuburstcopy[first] = processtable[first].cpuburst;
         }
-            
+        else if (cpuburstcopy[first] == 0 && processtable[first].arrival > current_time)
+        {
+            first = (first + 1) % MAX_PROCESS;
+            continue;
+        }
+        
         if (cpuburstcopy[first] > 0) 
         {
             int tmp = 0;
-            if (cpuburstcopy[first] - quantum < 0)
+            if ((cpuburstcopy[first] - quantum) < 0)
             {
                 tmp = cpuburstcopy[first];
                 cpuburstcopy[first] = -1;
                 current_time += tmp;
                 finishing_time[first] = current_time;
-                break;
+                first = (first + 1) % MAX_PROCESS;
             } 
-            cpuburstcopy[first] -= quantum;
-            current_time += quantum;
-            first = (first + 1) % MAX_PROCESS;
+            else
+            {
+                cpuburstcopy[first] -= quantum;
+                current_time += quantum;
+                first = (first + 1) % MAX_PROCESS;
+            }
         }
 
-        allFinished = true;
-        for (int i = 0; i < MAX_PROCESS; i++) {
-            if (cpuburstcopy[i] > 0) {
-                allFinished = false;
+        int i;
+        for (i = 0; i < MAX_PROCESS; i++)
+        {
+            if (cpuburstcopy[i] != -1)
                 break;
-            }
+        }
+
+        if (i == MAX_PROCESS)
+        {
+            allFinished = true;
         }
     }
 
@@ -246,6 +271,8 @@ void RR(int quantum)
     }
     printf("\n");
 }
+
+
 
 void SRBF()
 {
