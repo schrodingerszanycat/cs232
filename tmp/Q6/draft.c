@@ -4,17 +4,13 @@
 #include <stdbool.h>
 #include <limits.h>
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
-#define MAX_PROCESS 10
-FILE *resultsFile;
-
-int n_process = 0;
+#define MAX_PROCESS 4
 
 int current_time;
 
 void ReadProcessTable(char * filename);
 void PrintProcessTable();
-void PrintStatistics(const char * schedulingMethod);
-//void PrintStatistics();
+void PrintStatistics();
 void runMenu();
 void FCFS();
 void RR(int quantum);
@@ -36,12 +32,12 @@ void ReadProcessTable(char * filename)
         printf("No such file.");
         return;
     }
-    
-    char process_id[n_process];
-    char arrival_time[n_process];
-    char burst_time[n_process];
 
-    printf("I'm in ReadProcessTable.\n");
+    char process_id[MAX_PROCESS];
+    char arrival_time[MAX_PROCESS];
+    char burst_time[MAX_PROCESS];
+
+    printf("I'm in ReadProcessTable!\n\n");
 
     int j = 0;
     while (fscanf(f, "%s %s %s ", process_id, arrival_time, burst_time) == 3)
@@ -62,23 +58,21 @@ void ReadProcessTable(char * filename)
 
 void PrintProcessTable()
 {
-    printf("I'm in PrintProcessTable.\n\n");
-    for(int i = 0; i < n_process; i++)
+    printf("I'm in PrintProcessTable!\n\n");
+    for(int i = 0; i < MAX_PROCESS; i++)
     {
         printf("%s %d %d\n", processtable[i].name, processtable[i].arrival, processtable[i].cpuburst);
     }
 }
 
-void PrintStatistics(const char * schedulingMethod)
+void PrintStatistics()
 {
     int sum_turnaround = 0;
     int sum_wait = 0;
-
-    // Printing to stdout
     printf("Turnaround times: ");
-    for (int i = 0; i < n_process; i++)
+    for (int i = 0; i < MAX_PROCESS; i++)
     {
-        if (i == n_process-1)
+        if (i == MAX_PROCESS-1)
         {
             printf("%s[%d] ", processtable[i].name, processtable[i].turnaround);
             sum_turnaround += processtable[i].turnaround;
@@ -88,11 +82,10 @@ void PrintStatistics(const char * schedulingMethod)
         sum_turnaround += processtable[i].turnaround;
     }
     printf("\n");
-
     printf("Wait times:       ");
-    for (int i = 0; i < n_process; i++)
+    for (int i = 0; i < MAX_PROCESS; i++)
     {
-        if (i == n_process-1)
+        if (i == MAX_PROCESS-1)
         {
             printf("%s[%d] ", processtable[i].name, processtable[i].wait);
             sum_wait += processtable[i].wait;
@@ -102,53 +95,8 @@ void PrintStatistics(const char * schedulingMethod)
         sum_wait += processtable[i].wait;
     }
     printf("\n\n");
-    printf("Average turnaround time: %0.2f\n", (double) sum_turnaround/n_process);
-    printf("Average wait time: %0.2f\n", (double) sum_wait/n_process);
-
-    // Resetting Statistics to print in file
-    sum_turnaround = 0;
-    sum_wait = 0;
-
-    resultsFile = fopen("results.txt", "a");
-    if (resultsFile == NULL) {
-        printf("Error opening results.txt for appending.\n");
-        return;
-    }
-
-    fprintf(resultsFile, "\n---------------------------------------------");
-    fprintf(resultsFile, "\nScheduling Method: %s\n", schedulingMethod);
-
-    //Printing in file
-    fprintf(resultsFile, "Turnaround times: ");
-    for (int i = 0; i < n_process; i++)
-    {
-        if (i == n_process-1)
-        {
-            fprintf(resultsFile, "%s[%d] ", processtable[i].name, processtable[i].turnaround);
-            sum_turnaround += processtable[i].turnaround;
-            break;
-        }
-        fprintf(resultsFile, "%s[%d], ", processtable[i].name, processtable[i].turnaround);
-        sum_turnaround += processtable[i].turnaround;
-    }
-    fprintf(resultsFile, "\n");
-
-    fprintf(resultsFile, "Wait times:       ");
-    for (int i = 0; i < n_process; i++)
-    {
-        if (i == n_process-1)
-        {
-            fprintf(resultsFile, "%s[%d] ", processtable[i].name, processtable[i].wait);
-            sum_wait += processtable[i].wait;
-            break;
-        }
-        fprintf(resultsFile, "%s[%d], ", processtable[i].name, processtable[i].wait);
-        sum_wait += processtable[i].wait;
-    }
-    fprintf(resultsFile, "\n\n");
-    fprintf(resultsFile, "Average turnaround time: %0.2f\n", (double) sum_turnaround/n_process);
-    fprintf(resultsFile, "Average wait time: %0.2f\n", (double) sum_wait/n_process);
-    fclose(resultsFile);
+    printf("Average turnaround time: %0.2f\n", (double) sum_turnaround/MAX_PROCESS);
+    printf("Average wait time: %0.2f\n", (double) sum_wait/MAX_PROCESS);
 }
 
 void FCFS()
@@ -159,7 +107,7 @@ void FCFS()
     current_time = 0;
     int start_time = 0;
 
-    for(int i = 0; i < n_process; i++)
+    for(int i = 0; i < MAX_PROCESS; i++)
     {
         int tmp = 0;
         while (tmp != processtable[i].cpuburst)
@@ -173,14 +121,14 @@ void FCFS()
         start_time = current_time;
     }
     printf("\n");
-    PrintStatistics("FCFS");
+    PrintStatistics();
     printf("\n");
     // printf("Hit any key to continue...\n");
 }
 
-bool AllCompleted(int cpuburstcopy[n_process])
+bool AllCompleted(int cpuburstcopy[MAX_PROCESS])
 {
-    for (int i = 0; i < n_process; i++)
+    for (int i = 0; i < MAX_PROCESS; i++)
     {
         if (cpuburstcopy[i] != -1)
             return false;
@@ -195,9 +143,9 @@ void RR(int quantum)
     printf("-------------------------------------------------\n");
     
     current_time = 0;
-    int cpuburstcopy[n_process];
-    int finishing_time[n_process];
-    for (int i = 0; i < n_process; i++)
+    int cpuburstcopy[MAX_PROCESS];
+    int finishing_time[MAX_PROCESS];
+    for (int i = 0; i < MAX_PROCESS; i++)
     {
         cpuburstcopy[i] = 0;
         finishing_time[i] = 0;
@@ -209,7 +157,7 @@ void RR(int quantum)
 
         if (cpuburstcopy[first] == -1)
         {
-            first = (first + 1) % n_process;
+            first = (first + 1) % MAX_PROCESS;
             continue;
         }
 
@@ -219,7 +167,7 @@ void RR(int quantum)
         }
         else if (cpuburstcopy[first] == 0 && processtable[first].arrival > current_time)
         {
-            first = (first + 1) % n_process;
+            first = (first + 1) % MAX_PROCESS;
             continue;
         }
         
@@ -242,26 +190,26 @@ void RR(int quantum)
                 current_time += quantum;
                 printf("%d]    %s running\n", current_time, processtable[first].name);
             }
-            first = (first + 1) % n_process;
+            first = (first + 1) % MAX_PROCESS;
             continue;
         }
     }
 
-    for (int i = 0; i < n_process; i++)
+    for (int i = 0; i < MAX_PROCESS; i++)
     {
         processtable[i].turnaround = finishing_time[i]-processtable[i].arrival;
         processtable[i].wait = processtable[i].turnaround-processtable[i].cpuburst;
     }
 
     printf("\n");
-    PrintStatistics("RR");
+    PrintStatistics();
     printf("\n");
     // printf("Hit any key to continue...\n");
 }
 
-int findIndex(int min_value, int cpuburstcopy[n_process])
+int findIndex(int min_value, int cpuburstcopy[MAX_PROCESS])
 {
-    for(int i = 0; i < n_process; i++)
+    for(int i = 0; i < MAX_PROCESS; i++)
     {
         if (cpuburstcopy[i] == min_value)
             return i;
@@ -269,11 +217,11 @@ int findIndex(int min_value, int cpuburstcopy[n_process])
     return -1;
 }
 
-int findBest(int cpuburstcopy[n_process])
+int findBest(int cpuburstcopy[MAX_PROCESS])
 {
     int min_value = INT_MAX;
     int min_index = -1;
-    for(int i = 0; i < n_process; i++)
+    for(int i = 0; i < MAX_PROCESS; i++)
     {
         if (cpuburstcopy[i] == -1 || cpuburstcopy[i] == 0)
             continue;
@@ -283,9 +231,9 @@ int findBest(int cpuburstcopy[n_process])
     return min_index;
 }
 
-void refurbish(int cpuburstcopy[n_process])
+void refurbish(int cpuburstcopy[MAX_PROCESS])
 {
-    for(int i = 0; i < n_process; i++)
+    for(int i = 0; i < MAX_PROCESS; i++)
     {
         if (cpuburstcopy[i] == 0 && processtable[i].arrival <= current_time) 
         {
@@ -300,9 +248,9 @@ void SRBF()
     printf("         Shortest Remaining Burst First          \n");
     printf("-------------------------------------------------\n");
     current_time = 0;
-    int finishing_time[n_process];
-    int cpuburstcopy[n_process];
-    for (int i = 0; i < n_process; i++)
+    int finishing_time[MAX_PROCESS];
+    int cpuburstcopy[MAX_PROCESS];
+    for (int i = 0; i < MAX_PROCESS; i++)
     {
         cpuburstcopy[i] = 0;
         finishing_time[i] = 0;
@@ -314,31 +262,29 @@ void SRBF()
     {
         start_time = current_time;
         refurbish(cpuburstcopy);
-        
+        // for(int i = 0; i < MAX_PROCESS; i++)
+        // {
+        //     printf("%d ", cpuburstcopy[i]);
+        // }
+        //printf("\n");
         best = findBest(cpuburstcopy);
         cpuburstcopy[best] -= 1;
-        printf("[%d-", start_time);
         current_time++;
+        printf("")
         
         if (cpuburstcopy[best] == 0)
         {
             finishing_time[best] = current_time;
             cpuburstcopy[best] = -1;
         }      
-        printf("%d]    %s running\n", current_time, processtable[best].name);
     }
 
-    for (int i = 0; i < n_process; i++)
-    {
-        processtable[i].turnaround = finishing_time[i]-processtable[i].arrival;
-        processtable[i].wait = processtable[i].turnaround-processtable[i].cpuburst;
-    }
-
-    printf("\n");
-    PrintStatistics("SRBF");
-    printf("\n");
-    // printf("Hit any key to continue...\n");
-
+    // printf("\n\nFinishing times: ");
+    // for (int i = 0; i < MAX_PROCESS; i++)
+    // {
+    //     printf("%d ", finishing_time[i]);
+    // }
+    // printf("\n");
 }
 
 void runMenu()
@@ -372,28 +318,10 @@ void runMenu()
                 SRBF();
                 break;
             case 4:
-                choice = 4;
                 break;                
         }
     }
-}
-
-int getProcessCount(char * filename)
-{
-    int count = 0;  
-    char c;
-    FILE *fp = fopen(filename, "r");
- 
-    if (fp == NULL)
-    {
-        printf("Could not open file %s", filename);
-        return 0;
-    }
-    for (c = getc(fp); c != EOF; c = getc(fp))
-        if (c == '\n')
-            count = count + 1;
-    fclose(fp);
-    return count+1;
+    return;
 }
 
 int main(int argc, char **argv)
@@ -403,19 +331,8 @@ int main(int argc, char **argv)
         printf("usage: ./a.out <filename.txt>\n");
         return 0;
     }
-
-    resultsFile = fopen("results.txt", "w");
-    if (resultsFile == NULL) {
-        printf("Error opening results.txt for writing.\n");
-        return 1;
-    }
-
-    n_process = getProcessCount(argv[1]);
-    printf("No.of processes: %d\n", n_process);
     ReadProcessTable(argv[1]);
     PrintProcessTable();
     runMenu();
-    fclose(resultsFile);
     return 0;
 }
-
