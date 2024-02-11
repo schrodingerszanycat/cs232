@@ -17,22 +17,106 @@
     // char b[MAX_PROCESS][MAX_PROCESS];
 
 
-void FCFS()
-{
+// void FCFS()
+// {
+//     printf("-------------------------------------------------\n");
+//     printf("       First Come First Served Scheduling        \n");
+//     printf("-------------------------------------------------\n");
+//     current_time = 0;
+//     int start_time = 0;
+//     for(int i = 0; i < MAX_PROCESS; i++)
+//     {
+//         int tmp = 0;
+//         while (tmp != processtable[i].cpuburst)
+//         {
+//             tmp++;
+//             current_time++;
+//         }
+//         print("[%d-%d]   %s running\n", start_time, current_time, processtable[i].name);
+//         start_time = current_time;
+//     }
+// }
+
+void RR(int quantum) {
     printf("-------------------------------------------------\n");
-    printf("       First Come First Served Scheduling        \n");
+    printf("             Round Robin Scheduling              \n");
     printf("-------------------------------------------------\n");
-    current_time = 0;
-    int start_time = 0;
-    for(int i = 0; i < MAX_PROCESS; i++)
-    {
-        int tmp = 0;
-        while (tmp != processtable[i].cpuburst)
-        {
-            tmp++;
-            current_time++;
+
+    int current_time = 0;
+    int cpuburstcopy[MAX_PROCESS];
+    int finishing_time[MAX_PROCESS];
+    bool allFinished = false;
+
+    for (int i = 0; i < MAX_PROCESS; i++) {
+        if (processtable[i].arrival > current_time) {
+            cpuburstcopy[i] = 0;
+            continue;
         }
-        print("[%d-%d]   %s running\n", start_time, current_time, processtable[i].name);
-        start_time = current_time;
+        cpuburstcopy[i] = processtable[i].cpuburst;
     }
+
+    int first = 0;
+
+    while (!allFinished) {
+        for (int i = 0; i < MAX_PROCESS; i++) {
+            printf("%d ", cpuburstcopy[i]);
+
+            if (cpuburstcopy[i] > 0) {
+                cpuburstcopy[i] -= quantum;
+                if (cpuburstcopy[i] <= 0) {
+                    finishing_time[i] = current_time;
+                }
+            }
+
+            current_time++;
+            first = (first + 1) % MAX_PROCESS;
+        }
+
+        // Check if all processes are finished
+        allFinished = true;
+        for (int i = 0; i < MAX_PROCESS; i++) {
+            if (cpuburstcopy[i] > 0) {
+                allFinished = false;
+                break;
+            }
+        }
+    }
+    printf("\n");
 }
+
+ // while(!allFinished)
+    // {
+    //     for(int i = 0; i < MAX_PROCESS; i++)
+    //     {
+    //         for(int i = 0; i < MAX_PROCESS; i++)
+    //         {
+    //             printf("%d ", cpuburstcopy[i]);
+    //         }
+    //         cpuburstcopy[i] -= 2;
+    //         if (cpuburstcopy[i] == 0)
+    //             finishing_time[i] = current_time; 
+    //         first = (first + 1) % MAX_PROCESS;
+    //         current_time++;
+    //         for (int i = 0; i < MAX_PROCESS; i++)
+    //         {
+    //             if (cpuburstcopy[i] != 0)
+    //                 break;
+    //             if (i == MAX_PROCESS)
+    //             {
+    //                 allFinished = true;
+    //                 break;
+    //             }                               
+    //         }
+    //     }
+    // }
+    // printf("\n");
+
+    // for (int i = 0; i < MAX_PROCESS; i++)
+    // {
+    //     if (processtable[i].arrival > current_time)
+    //     {
+    //         cpuburstcopy[i] = 0;
+    //         continue;
+    //     }
+    //     cpuburstcopy[i] = processtable[i].cpuburst;
+    // }

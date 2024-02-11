@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #define MAX_PROCESS 4
 
 int current_time;
@@ -8,6 +9,9 @@ int current_time;
 void ReadProcessTable(char * filename);
 void PrintProcessTable();
 void PrintStatistics();
+void runMenu();
+void FCFS();
+void RR(int quantum);
 
 typedef struct {
     char * name;
@@ -120,6 +124,134 @@ void FCFS()
     // printf("Hit any key to continue...\n");
 }
 
+// void RR(int quantum)
+// {
+//     printf("-------------------------------------------------\n");
+//     printf("             Round Robin Scheduling              \n");
+//     printf("-------------------------------------------------\n");
+    
+//     int current_time = 0;
+//     int cpuburstcopy[MAX_PROCESS];
+//     int finishing_time[MAX_PROCESS];
+//     for (int i = 0; i < MAX_PROCESS; i++)
+//     {
+//         cpuburstcopy[i] = 0;
+//         finishing_time[i] = 0;
+//     }
+
+//     int first = 0;
+//     bool allFinished = false;
+//     while (!allFinished) {
+//         for (int i = 0; i < MAX_PROCESS; i++) 
+//         {
+//             printf("%d ", cpuburstcopy[i]);
+
+//             if (cpuburstcopy[i] == 0 && processtable[i].arrival <= current_time) 
+//             {
+//                 cpuburstcopy[i] = processtable[i].cpuburst;
+//             }
+            
+//             if (cpuburstcopy[i] > 0) 
+//             {
+//                 int tmp = 0;
+//                 if (cpuburstcopy[i] - quantum < 0)
+//                 {
+//                     tmp = cpuburstcopy[i];
+//                     cpuburstcopy[i] = -1;
+//                     current_time += tmp;
+//                     finishing_time[i] = current_time;
+//                     break;
+//                 } 
+//                 cpuburstcopy[i] -= quantum;
+//                 current_time += quantum;
+//                 first = (first + 1) % MAX_PROCESS;
+//             }
+//         }
+
+//         allFinished = true;
+//         for (int i = 0; i < MAX_PROCESS; i++) {
+//             if (cpuburstcopy[i] > 0) {
+//                 allFinished = false;
+//                 break;
+//             }
+//         }
+//     }
+//     printf("\n\nFinishing times: ");
+
+//     for (int i = 0; i < MAX_PROCESS; i++)
+//     {
+//         printf("%d ", finishing_time[i]);
+//     }
+//     printf("\n");
+// }
+
+void RR(int quantum)
+{
+    printf("-------------------------------------------------\n");
+    printf("             Round Robin Scheduling              \n");
+    printf("-------------------------------------------------\n");
+    
+    int current_time = 0;
+    int cpuburstcopy[MAX_PROCESS];
+    int finishing_time[MAX_PROCESS];
+    for (int i = 0; i < MAX_PROCESS; i++)
+    {
+        cpuburstcopy[i] = 0;
+        finishing_time[i] = 0;
+    }
+
+    int first = 0;
+    bool allFinished = false;
+    while (!allFinished) {
+    
+        for(int j = 0; j < MAX_PROCESS; j++)
+        {
+            printf("%d ", cpuburstcopy[j]);
+        }
+
+        if (cpuburstcopy[first] == 0 && processtable[first].arrival <= current_time) 
+        {
+            cpuburstcopy[first] = processtable[first].cpuburst;
+        }
+            
+        if (cpuburstcopy[first] > 0) 
+        {
+            int tmp = 0;
+            if (cpuburstcopy[first] - quantum < 0)
+            {
+                tmp = cpuburstcopy[first];
+                cpuburstcopy[first] = -1;
+                current_time += tmp;
+                finishing_time[first] = current_time;
+                break;
+            } 
+            cpuburstcopy[first] -= quantum;
+            current_time += quantum;
+            first = (first + 1) % MAX_PROCESS;
+        }
+
+        allFinished = true;
+        for (int i = 0; i < MAX_PROCESS; i++) {
+            if (cpuburstcopy[i] > 0) {
+                allFinished = false;
+                break;
+            }
+        }
+    }
+
+    printf("\n\nFinishing times: ");
+    for (int i = 0; i < MAX_PROCESS; i++)
+    {
+        printf("%d ", finishing_time[i]);
+    }
+    printf("\n");
+}
+
+void SRBF()
+{
+    return;
+}
+
 void runMenu()
 {
     int choice = -1;
@@ -141,6 +273,10 @@ void runMenu()
                 FCFS();
                 break;
             case 2:
+                int quantum;
+                printf("Enter the time quantum: ");
+                scanf("%d", &quantum);
+                RR(quantum);
                 break;
             case 3:
                 break;
@@ -151,9 +287,14 @@ void runMenu()
     return;
 }
 
-int main(int)
+int main(int argc, char **argv)
 {
-    ReadProcessTable("process.txt");
+    if (argc < 2)
+    {
+        printf("usage: ./a.out <filename.txt>\n");
+        return 0;
+    }
+    ReadProcessTable(argv[1]);
     PrintProcessTable();
     runMenu();
     return 0;
