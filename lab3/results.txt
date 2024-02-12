@@ -1,0 +1,24 @@
+
+---------------------------------------------
+Scheduling Method: FCFS
+Turnaround times: P0[3], P1[8], P2[8], P3[9] 
+Wait times:       P0[0], P1[2], P2[4], P3[6] 
+
+Average turnaround time: 7.00
+Average wait time: 3.00
+
+---------------------------------------------
+Scheduling Method: RR
+Turnaround times: P0[5], P1[12], P2[10], P3[9] 
+Wait times:       P0[2], P1[6], P2[6], P3[6] 
+
+Average turnaround time: 9.00
+Average wait time: 5.00
+
+---------------------------------------------
+Scheduling Method: SRBF
+Turnaround times: P0[3], P1[8], P2[11], P3[5] 
+Wait times:       P0[0], P1[2], P2[7], P3[2] 
+
+Average turnaround time: 6.75
+Average wait time: 2.75

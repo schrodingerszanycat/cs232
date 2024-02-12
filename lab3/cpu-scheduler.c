@@ -283,6 +283,7 @@ int findBest(int cpuburstcopy[n_process])
     return min_index;
 }
 
+// Checks if any process has arrived and updates array of cpuburst times
 void refurbish(int cpuburstcopy[n_process])
 {
     for(int i = 0; i < n_process; i++)
@@ -338,7 +339,6 @@ void SRBF()
     PrintStatistics("SRBF");
     printf("\n");
     // printf("Hit any key to continue...\n");
-
 }
 
 void runMenu()
@@ -400,7 +400,7 @@ int main(int argc, char **argv)
 {
     if (argc < 2)
     {
-        printf("usage: ./a.out <filename.txt>\n");
+        printf("usage: ./cpu-scheduler.o <FILENAME>.txt\n");
         return 0;
     }
 
