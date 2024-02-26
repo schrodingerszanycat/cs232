@@ -66,18 +66,17 @@ int main(int argc, char *argv[])
     }
     else if (p == 0)
     {
-        signal(SIGTERM, child_termination_handler);
         for(int j = x; j <= y; j++)
         {
-            if(is_prime(j))
+            if (is_prime(j))
                 printf("%d ", j);
         }
         exit(0);
     }
     else 
     {
-        signal(SIGALRM, handler);
         alarm(z);
+        signal(SIGALRM, handler);
         int s = setjmp(env);
         if(s == 0)
         {
@@ -96,7 +95,6 @@ int main(int argc, char *argv[])
         }
     }
     return 0;
-
 }
 
 
