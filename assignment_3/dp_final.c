@@ -58,7 +58,7 @@ void test(int p)
 		deQueue();
         state[p] = "EATING";
 		sleep(2);
-		//printf("Philosopher %d takes fork %d and %d\n", p + 1, LEFT + 1, p + 1);
+		printf("Philosopher %d takes fork %d and %d\n", p + 1, LEFT + 1, p + 1);
 		printf("Philosopher %d is Eating\n", p + 1);
 		// used to wake up hungry philosophers during putfork
 		sem_post(&S[p]);
@@ -69,7 +69,7 @@ void take_fork(int p)
 {
 	sem_wait(&mutex);
 	state[p] = "HUNGRY";
-	//printf("Philosopher %d is Hungry\n", p + 1);
+	printf("Philosopher %d is Hungry\n", p + 1);
 	test(p);
 	sem_post(&mutex);
 
@@ -82,8 +82,8 @@ void put_fork(int p)
 {
 	sem_wait(&mutex);
 	state[p] = "THINKING";
-	// printf("Philosopher %d putting fork %d and %d down\n", p + 1, LEFT + 1, p + 1);
-	// printf("Philosopher %d is thinking\n", p + 1);
+	printf("Philosopher %d putting fork %d and %d down\n", p + 1, LEFT + 1, p + 1);
+	printf("Philosopher %d is thinking\n", p + 1);
 	test(LEFT);
 	test(RIGHT);
 	sem_post(&mutex);
@@ -123,7 +123,7 @@ int main()
 	for (i = 0; i < N; i++) 
 	{
 		pthread_create(&thread_id[i], NULL, philosopher, &philosophers[i]);
-		//printf("Philosopher %d is thinking\n", i + 1);
+		printf("Philosopher %d is thinking\n", i + 1);
 	}
 	for (i = 0; i < N; i++)
     {
