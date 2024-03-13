@@ -14,13 +14,13 @@
 jmp_buf env;
 
 void handler() {
-    longjmp(env, 2);
+    longjmp(env, 1);
+    exit(1);
 }
 
 void child_termination_handler(int pid) {
-    kill(pid, SIGKILL);
-    wait(NULL);
-    fprintf(stderr, "Process %d: I've been killed\n", pid);
+    kill(pid, SIGTERM);
+    fprintf(stderr, "Process %d: I've been killed", getpid());
     exit(1);
 }
 
@@ -75,13 +75,12 @@ int main(int argc, char *argv[])
     }
     else 
     {
+        alarm(z);
+        signal(SIGALRM, handler);
         int s = setjmp(env);
         if(s == 0)
         {
-            signal(SIGALRM, handler);
-            alarm(z);
             wait(NULL);
-            alarm(0);
             longjmp(env, 1);
         }
         else if(s == 1)
@@ -97,6 +96,7 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
+
 
 
 
