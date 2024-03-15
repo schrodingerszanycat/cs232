@@ -3,11 +3,10 @@
 #include <pthread.h>
 #include<time.h>
 
-typedef struct bound
-{
+typedef struct bound {
 	int start;
 	int end;
-	long long res
+	long long res;
 } bound;
 
 void* sum_runner(void* arg)
