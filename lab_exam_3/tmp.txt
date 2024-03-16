@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <pthread.h>
+#include <stdlib.h>
+
+int n;
+int *arr;
+
+void *sort_first_half(void *dummyPtr)
+{
+    int start = 0;
+    int end = n/2 - 1;
+
+    for(int i = start; i <= end; i++)
+    {
+        int min_index = i;
+        for(int j = i + 1; j <= end; j++)
+        {
+            if(arr[j] < arr[min_index])
+                min_index = j;
+        }
+        if(min_index == i)
+            continue;
+        int temp = arr[i];
+        arr[i] = arr[min_index];
+        arr[min_index] = temp;
+    }
+
+    pthread_exit(NULL);
+}
+
+void *sort_second_half(void *dummyPtr)
+{
+    int start = n/2;
+    int end = n - 1;
+
+    for(int i = start; i <= end; i++)
+    {
+        int min_index = i;
+        for(int j = i + 1; j <= end; j++)
+        {
+            if(arr[j] < arr[min_index])
+                min_index = j;
+        }
+        if(min_index == i)
+            continue;
+        int temp = arr[i];
+        arr[i] = arr[min_index];
+        arr[min_index] = temp;
+    }
+
+    pthread_exit(NULL);
+}
+
+int main()
+{
+    printf("Enter the array size\n");
+    scanf("%d", &n);
+
+    arr = (int *) calloc(n, sizeof(int));
+
+    printf("Enter the elements of the array\n");
+    for(int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+    
+    pthread_t thread_ids[2];
+
+    pthread_create(&thread_ids[0], NULL, &sort_first_half, NULL);
+    pthread_create(&thread_ids[1], NULL, &sort_second_half, NULL);
+
+    pthread_join(thread_ids[0], NULL);
+    pthread_join(thread_ids[1], NULL);
+
+    printf("The two sorted halves that need to be merged:\n");
+    for(int i = 0; i < n/2; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+    for(int i = n/2; i < n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+
+
+    int ptr1 = 0;
+    int ptr2 = n/2;
+
+    int narr[n];
+    int narr_index = 0;
+
+    while(ptr1 < n/2 && ptr2 < n)
+    {
+        if(arr[ptr1] < arr[ptr2])
+        {
+            narr[narr_index] = arr[ptr1];
+            ptr1++;
+        }
+        else
+        {
+            narr[narr_index] = arr[ptr2];
+            ptr2++;
+        }
+        narr_index++;
+    }
+
+    while(ptr1 < n/2)
+    {
+        narr[narr_index] = arr[ptr1];
+        ptr1++;
+        narr_index++;
+    }
+
+    while(ptr2 < n)
+    {
+        narr[narr_index] = arr[ptr2];
+        narr_index++;
+        ptr2++;
+    }
+
+    for(int i = 0; i < n; i++)
+        arr[i] = narr[i];
+
+    printf("The merged array: \n");
+    for(int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+
+
+    free(arr);
+
+    return 0;
+}
