@@ -105,7 +105,7 @@ int main() {
         array[i] = new_array[i];
     }
 
-    printf("The merged arrayay: \n");
+    printf("The merged array: \n");
     for(int i = 0; i < n; i++)
     {
         printf("%d ", array[i]);
