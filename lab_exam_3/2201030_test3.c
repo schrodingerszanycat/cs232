@@ -75,7 +75,7 @@ int main() {
     int p1 = 0;
     int p2 = n/2;
     int new_array_index = 0;
-    int *new_array = (int *)malloc(n * sizeof(int));
+    int *new_array = (int *) malloc(n * sizeof(int));
 
     // merging
     while(p1 < n/2 && p2 < n) 
