@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <semaphore.h>
 #include <stdbool.h>
+#include <sys/time.h>   
 #include <stdlib.h>
+#include <string.h>
 
 char *Input;
 char *Output;
@@ -22,18 +24,15 @@ char convert_case(char c) {
 
 void *f(void *arg) 
 {
-    while (true) { 
-        sem_wait(&mutex);
-        int curr_idx = str_idx;
-        str_idx++;
-        sem_post(&mutex);
-        
-        if (curr_idx >= length) { 
-            pthread_exit(NULL);
-        }
-
-        Output[curr_idx] = convert_case(Input[curr_idx]);
+    if (str_idx == length)
+    {
+        pthread_exit(0);
     }
+    sem_wait(&mutex);
+    int curr_idx = str_idx;
+    str_idx++;
+    sem_post(&mutex);
+    Output[curr_idx] = convert_case(Input[curr_idx]);
 }
 
 int main(int argc, char **argv)
@@ -46,7 +45,8 @@ int main(int argc, char **argv)
 
     printf("Enter the string: ");
     scanf("\n%[^\n]s", Input);
-    
+    //length = strlen(Input);
+
     printf("Enter the number of threads: ");
     scanf("%d", &n_threads);
 
@@ -70,9 +70,6 @@ int main(int argc, char **argv)
     printf("Output: %s\n", Output);
 
     sem_destroy(&mutex);
-
-    free(Input); 
-    free(Output);
 
     return 0;
 }
