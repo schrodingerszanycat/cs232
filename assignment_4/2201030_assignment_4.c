@@ -88,7 +88,6 @@ void resolve_deadlock(int available[], int allocation[][N_RESOURCES],
         }
     }
 
-    // Calculate surplus
     int surplus[num_deadlock_processes];
     memset(surplus, 0, sizeof(int) * num_deadlock_processes);
     for (int i = 0; i < num_deadlock_processes; i++)
@@ -102,7 +101,7 @@ void resolve_deadlock(int available[], int allocation[][N_RESOURCES],
         }
     }
 
-    // Sort on the basis of surplus
+    // Sort on the basis of surplus (descending)
     for (int i = 0; i < num_deadlock_processes; i++)
     {
         int mini = i;
@@ -122,7 +121,6 @@ void resolve_deadlock(int available[], int allocation[][N_RESOURCES],
         }
     }
 
-    // Kill processes in the decreasing order of surplus
     for (int i = 0; i < num_deadlock_processes; i++)
     {
         for (int j = 0; j < N_RESOURCES; j++)
